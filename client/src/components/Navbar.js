@@ -5,7 +5,7 @@ import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
 import Auth from '../utils/auth';
 
-const Navbar = () => {
+const NavbarApp = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -18,9 +18,6 @@ const Navbar = () => {
           <Navbar.Toggle aria-controls='navbar' />
           <Navbar.Collapse id='navbar'>
             <Nav className='ml-auto'>
-              <Nav.Link as={Link} to='/'>
-                Suggest a book
-              </Nav.Link>
               {/* if user is logged in show logout link*/}
               {Auth.loggedIn() ? (
                 <>
@@ -69,4 +66,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarApp;
