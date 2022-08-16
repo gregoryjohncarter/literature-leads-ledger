@@ -10,10 +10,10 @@ const bookSchema = new Schema({
     type: String,
   },
   pageCount: {
-    type: Number,
+    type: String,
   },
   averageRating: {
-    type: Number,
+    type: String,
   },
   publishedDate: {
     type: String,

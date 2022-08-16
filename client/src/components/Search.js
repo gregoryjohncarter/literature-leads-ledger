@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_BOOK } from '../utils/mutations';
-import { Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
+import { Container, Col, Form, Button, Card, CardColumns, Modal } from 'react-bootstrap';
 import auth from '../utils/auth';
 
 const Search = (props) => {
   const [addBook, { error }] = useMutation(ADD_BOOK);
   const [searchedBooks, setSearchedBooks] = useState([]); // keep track of returned google api data
   const [searchInput, setSearchInput] = useState('');
+  const [showResultsModal, setShowResultsModal] = useState(false);
 
   const searchGoogleBooks = (query) => {
     return fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
@@ -45,6 +46,7 @@ const Search = (props) => {
 
       setSearchedBooks(bookData);
       setSearchInput('');
+      setShowResultsModal(true);
     } catch (err) {
       console.error(err);
     }
@@ -72,14 +74,23 @@ const Search = (props) => {
   
     try {
       await addBook({
-        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: newPageCount, averageRating: newAverageRating, publishedDate: newPublishedDate, link: newLink, image: newImage },
+        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: String(newPageCount), averageRating: String(newAverageRating), publishedDate: newPublishedDate, link: newLink, image: newImage },
       });
-
+      setShowResultsModal(false);
       // setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (e) {
         console.error(e);
     }
   };
+
+  const checkButton = (bookToSave) => {
+    for (let i = 0; i < props.savedBookIds.length; i++) {
+        if (bookToSave.bookId === props.savedBookIds[i]) {
+            return false; 
+        }
+    }
+    return true;
+}
 
   return (
     <>
@@ -107,38 +118,46 @@ const Search = (props) => {
           </Form.Row>
         </Form>
       </Container>
-      <Container>
-        <h2>
-          {searchedBooks.length
-            ? `Viewing ${searchedBooks.length} results:`
-            : 'Search for a book to begin'}
-        </h2>
-        <CardColumns>
-          {searchedBooks.map((book) => {
-            return (
-              <Card key={book.bookId} border='dark'>
-                {book.image ? (
-                  <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top'/>
-                ) : null}
-                <Card.Body>
-                  <Card.Title>{book.title}</Card.Title>
-                  <p className='small'>Authors: {book.authors}</p>
-                  <Card.Text>{book.description}</Card.Text>
-                  <Button
-                    disabled={props.savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
-                    className='btn-block btn-info'
-                    onClick={() => handleSaveBook(book.bookId)}
-                  >
-                    {props.savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
-                      ? 'Already recommended!'
-                      : 'Save this Book!'}
-                  </Button>
-                </Card.Body>
-              </Card>
-            );
-          })}
-        </CardColumns>
-      </Container>
+      <Modal
+        size='lg'
+        show={showResultsModal}
+        onHide={() => setShowResultsModal(false)}
+        aria-labelledby='results-modal'
+      >
+        <Modal.Header closeButton style={{backgroundColor: 'grey'}}>
+          <Modal.Title id='results-modal' style={{backgroundColor: 'grey', color: 'whitesmoke'}}>
+            <h2 style={{fontFamily: 'Palatino'}}>
+              {searchedBooks.length
+                ? `Viewing ${searchedBooks.length} results:`
+                : 'Search for a book to begin'}
+            </h2>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{backgroundColor:'black'}}>
+          <Container>
+            <CardColumns>
+              {searchedBooks.map((book) => {
+                return (
+                  <Card className='border-0' key={book.bookId} border='dark' style={{fontFamily: 'Monaco', backgroundColor: 'black', color: 'whitesmoke', background: 'repeating-linear-gradient(-55deg,#222,#222 10px,#333 10px,#333 20px)'}}>
+                    {book.image ? (
+                      <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '500px', width: '350px', margin: 'auto', display: 'block', backgroundColor: 'black'}}/>
+                    ) : null}
+                    <Card.Body style={{border:'3px solid black', backgroundColor: 'black'}}>
+                      <Card.Title style={{marginTop: '15px', fontWeight:'bold'}}>{book.title}</Card.Title>
+                      <p className='small'>Authors: {book.authors}</p>
+                      <Card.Text style={{maxHeight: '15ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block'}}>{book.description}</Card.Text>
+                      <Card.Text>{book.description.length > 400 && <p>...</p>}</Card.Text>
+                      {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Book already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
+                        <Button variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
+                      )}
+                    </Card.Body>
+                  </Card>
+                );
+              })}
+            </CardColumns>
+          </Container>
+        </Modal.Body>
+      </Modal>
     </>
     // )}
     // </>
