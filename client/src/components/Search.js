@@ -36,6 +36,9 @@ const Search = (props) => {
         authors: book.volumeInfo.authors || ['No author to display'],
         title: book.volumeInfo.title || '',
         description: book.volumeInfo.description || '',
+        pageCount: book.volumeInfo.pageCount || '',
+        averageRating: book.volumeInfo.averageRating || '',
+        publishedDate: book.volumeInfo.publishedDate || '',
         image: book.volumeInfo.imageLinks?.thumbnail || '',
         link: book.volumeInfo.infoLink || ''
       }));
@@ -54,6 +57,9 @@ const Search = (props) => {
       var newAuthors = bookToSave.authors || "";
       var newTitle = bookToSave.title || "";
       var newDescription = bookToSave.description || "";
+      var newPageCount = bookToSave.pageCount || '';
+      var newAverageRating = bookToSave.averageRating || '';
+      var newPublishedDate = bookToSave.publishedDate || '';
       var newLink = bookToSave.link || "";
       var newImage = bookToSave.image || "";
     
@@ -66,7 +72,7 @@ const Search = (props) => {
   
     try {
       await addBook({
-        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, link: newLink, image: newImage },
+        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: newPageCount, averageRating: newAverageRating, publishedDate: newPublishedDate, link: newLink, image: newImage },
       });
 
       // setSavedBookIds([...savedBookIds, bookToSave.bookId]);

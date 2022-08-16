@@ -16,6 +16,9 @@ export const QUERY_BOOKS = gql`
       _id
       authors
       description
+      pageCount
+      averageRating
+      publishedDate
       bookId
       image
       link
