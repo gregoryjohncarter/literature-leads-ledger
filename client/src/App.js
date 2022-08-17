@@ -31,7 +31,7 @@ function App() {
         <>
           <NavbarApp />
           <Routes>
-            <Route exact path='/' element={<Homepage/>} />
+            <Route exact path='/' element={<Homepage/>}/>
             <Route render={() => <h1>Wrong page!</h1>} />
           </Routes>
         </>

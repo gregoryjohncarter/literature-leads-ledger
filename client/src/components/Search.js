@@ -99,7 +99,7 @@ const Search = (props) => {
     {/* {auth.loggedIn() && (
     <> */}
       <Container>
-        <h1>Find your book</h1>
+        <h1 style={{fontFamily: 'Lucida Console', fontSize: '30px', marginTop: '15px', fontStyle: 'italic'}}>Find your book</h1>
         <Form onSubmit={handleFormSubmit}>
           <Form.Row>
             <Col xs={12} md={8}>
@@ -109,12 +109,13 @@ const Search = (props) => {
                 onChange={(e) => setSearchInput(e.target.value)}
                 type='text'
                 size='lg'
-                placeholder='Search for a book'
+                placeholder='Search by title'
+                style={{fontFamily: 'Verdana'}}
               />
             </Col>
             <Col xs={12} md={4}>
-              <Button type='submit' variant='success' size='lg'>
-                Submit Search
+              <Button style={{fontFamily: 'Baskerville'}} type='submit' variant='success' size='lg'>
+                Submit
               </Button>
             </Col>
           </Form.Row>
@@ -127,8 +128,8 @@ const Search = (props) => {
         aria-labelledby='results-modal'
       >
         <Modal.Header closeButton style={{backgroundColor: 'grey'}}>
-          <Modal.Title id='results-modal' style={{backgroundColor: 'grey', color: 'whitesmoke'}}>
-            <h2 style={{fontFamily: 'Palatino'}}>
+          <Modal.Title id='results-modal' style={{backgroundColor: 'grey', color: 'lightgrey'}}>
+            <h2 style={{fontFamily: 'Times New Roman'}}>
               {searchedBooks.length
                 ? `Viewing ${searchedBooks.length} results:`
                 : 'Search for a book to begin'}
@@ -140,14 +141,14 @@ const Search = (props) => {
             <CardColumns>
               {searchedBooks.map((book) => {
                 return (
-                  <Card className='border-0' key={book.bookId} border='dark' style={{fontFamily: 'Monaco', backgroundColor: 'black', color: 'whitesmoke', background: 'repeating-linear-gradient(-55deg,#222,#222 10px,#333 10px,#333 20px)'}}>
+                  <Card className='border-0' key={book.bookId} border='dark' style={{fontFamily: 'Trebuchet MS', backgroundColor: 'black', color: 'whitesmoke', background: 'repeating-linear-gradient(-55deg,#222,#222 10px,#333 10px,#333 20px)'}}>
                     {book.image ? (
                       <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '500px', width: '350px', margin: 'auto', display: 'block', backgroundColor: 'black'}}/>
                     ) : null}
                     <Card.Body style={{border:'3px solid black', backgroundColor: 'black'}}>
                       <Card.Title style={{marginTop: '15px', fontWeight:'bold'}}>{book.title}</Card.Title>
-                      <p className='small'>Authors: {book.authors}</p>
-                      <Card.Text style={{maxHeight: '15ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block'}}>{book.description}</Card.Text>
+                      <p><span style={{fontStyle: 'italic'}}>Authors:</span> {book.authors}</p>
+                      <Card.Text style={{maxHeight: '15ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block', color:'lightgry'}}>{book.description}</Card.Text>
                       <Card.Text>{book.description.length > 400 && <p>...</p>}</Card.Text>
                       {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Book already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
                         <Button variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>

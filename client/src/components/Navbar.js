@@ -12,8 +12,12 @@ const NavbarApp = () => {
     <>
       <Navbar bg='dark' variant='dark' expand='lg'>
         <Container fluid>
-          <Navbar.Brand as={Link} to='/'>
-            Literature Leads Ledger
+          <Navbar.Brand as={Link} to='/' style={{
+            fontFamily: 'Baskerville',
+            fontWeight: 'bold',
+            fontSize: '25px'
+          }}>
+            <span style={{textDecoration: 'underline', textDecorationColor: 'darkseagreen'}}>Literature</span> <span style={{textDecoration: 'underline', textDecorationColor: 'cadetblue'}}>Leads</span> <span style={{textDecoration: 'underline', textDecorationColor: 'cornflowerblue'}}>Ledger</span> 📖
           </Navbar.Brand>
           <Navbar.Toggle aria-controls='navbar' />
           <Navbar.Collapse id='navbar'>
@@ -21,10 +25,10 @@ const NavbarApp = () => {
               {/* if user is logged in show logout link*/}
               {Auth.loggedIn() ? (
                 <>
-                  <Nav.Link onClick={Auth.logout}>Logout</Nav.Link>
+                  <Nav.Link style={{fontStyle: 'Lucida Console', fontSize: '20px', fontWeight: 'bold'}} onClick={Auth.logout}>Logout</Nav.Link>
                 </>
               ) : (
-                <Nav.Link onClick={() => setShowModal(true)}>Login/Sign Up</Nav.Link>
+                <Nav.Link style={{fontStyle: 'Lucida Console', fontSize: '20px', fontWeight: 'bold'}} onClick={() => setShowModal(true)}>Login/Sign Up</Nav.Link>
               )}
             </Nav>
           </Navbar.Collapse>
