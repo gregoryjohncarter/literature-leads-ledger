@@ -19,6 +19,7 @@ export const QUERY_BOOKS = gql`
       pageCount
       averageRating
       publishedDate
+      categories
       bookId
       image
       link

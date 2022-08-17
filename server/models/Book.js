@@ -18,6 +18,9 @@ const bookSchema = new Schema({
   publishedDate: {
     type: String,
   },
+  categories: {
+    type: String,
+  },
   // saved book id from GoogleBooks
   bookId: {
     type: String,

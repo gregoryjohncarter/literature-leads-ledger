@@ -40,6 +40,7 @@ const Search = (props) => {
         pageCount: book.volumeInfo.pageCount || '',
         averageRating: book.volumeInfo.averageRating || '',
         publishedDate: book.volumeInfo.publishedDate || '',
+        categories: book.volumeInfo.categories[0] || '',
         image: book.volumeInfo.imageLinks?.thumbnail || '',
         link: book.volumeInfo.infoLink || ''
       }));
@@ -62,6 +63,7 @@ const Search = (props) => {
       var newPageCount = bookToSave.pageCount || '';
       var newAverageRating = bookToSave.averageRating || '';
       var newPublishedDate = bookToSave.publishedDate || '';
+      var newCategories = bookToSave.categories || '';
       var newLink = bookToSave.link || "";
       var newImage = bookToSave.image || "";
     
@@ -74,7 +76,7 @@ const Search = (props) => {
   
     try {
       await addBook({
-        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: String(newPageCount), averageRating: String(newAverageRating), publishedDate: newPublishedDate, link: newLink, image: newImage },
+        variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: String(newPageCount), averageRating: String(newAverageRating), publishedDate: newPublishedDate, categories: newCategories, link: newLink, image: newImage },
       });
       setShowResultsModal(false);
       // setSavedBookIds([...savedBookIds, bookToSave.bookId]);
