@@ -34,15 +34,15 @@ const Search = (props) => {
 
       const bookData = items.map((book) => ({
         bookId: book.id,
-        authors: book.volumeInfo.authors || ['No author to display'],
-        title: book.volumeInfo.title || '',
-        description: book.volumeInfo.description || '',
-        pageCount: book.volumeInfo.pageCount || '',
-        averageRating: book.volumeInfo.averageRating || '',
-        publishedDate: book.volumeInfo.publishedDate || '',
-        categories: book.volumeInfo.categories[0] || '',
+        authors: book.volumeInfo.authors ? book.volumeInfo.authors : ['No author to display'],
+        title: book.volumeInfo.title ? book.volumeInfo.title : '',
+        description: book.volumeInfo.description ? book.volumeInfo.description : '',
+        pageCount: book.volumeInfo.pageCount ? book.volumeInfo.pageCount : '',
+        averageRating: book.volumeInfo.averageRating ? book.volumeInfo.averageRating : '',
+        publishedDate: book.volumeInfo.publishedDate ? book.volumeInfo.publishedDate : '',
+        categories: book.volumeInfo.categories ? book.volumeInfo.categories : '',
         image: book.volumeInfo.imageLinks?.thumbnail || '',
-        link: book.volumeInfo.infoLink || ''
+        link: book.volumeInfo.infoLink ? book.volumeInfo.infoLink : ''
       }));
 
       setSearchedBooks(bookData);
@@ -56,16 +56,16 @@ const Search = (props) => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-      var newBookId = bookToSave.bookId || "";
-      var newAuthors = bookToSave.authors || "";
-      var newTitle = bookToSave.title || "";
-      var newDescription = bookToSave.description || "";
-      var newPageCount = bookToSave.pageCount || '';
-      var newAverageRating = bookToSave.averageRating || '';
-      var newPublishedDate = bookToSave.publishedDate || '';
-      var newCategories = bookToSave.categories || '';
-      var newLink = bookToSave.link || "";
-      var newImage = bookToSave.image || "";
+      var newBookId = bookToSave.bookId;
+      var newAuthors = bookToSave.authors ? bookToSave.authors : [''];
+      var newTitle = bookToSave.title;
+      var newDescription = bookToSave.description;
+      var newPageCount = bookToSave.pageCount;
+      var newAverageRating = bookToSave.averageRating;
+      var newPublishedDate = bookToSave.publishedDate;
+      var newCategories = bookToSave.categories[0] ? bookToSave.categories[0] : '';
+      var newLink = bookToSave.link;
+      var newImage = bookToSave.image;
     
     // get token
     const token = auth.loggedIn() ? auth.getToken() : null;
@@ -79,7 +79,6 @@ const Search = (props) => {
         variables: { bookId: newBookId, authors: newAuthors, title: newTitle, description: newDescription, pageCount: String(newPageCount), averageRating: String(newAverageRating), publishedDate: newPublishedDate, categories: newCategories, link: newLink, image: newImage },
       });
       setShowResultsModal(false);
-      // setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (e) {
         console.error(e);
     }
@@ -96,8 +95,6 @@ const Search = (props) => {
 
   return (
     <>
-    {/* {auth.loggedIn() && (
-    <> */}
       <Container>
         <h1 style={{fontFamily: 'Lucida Console', fontSize: '30px', marginTop: '15px', fontStyle: 'italic'}}>Find your book</h1>
         <Form onSubmit={handleFormSubmit}>
@@ -146,12 +143,12 @@ const Search = (props) => {
                       <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '500px', width: '350px', margin: 'auto', display: 'block', backgroundColor: 'black'}}/>
                     ) : null}
                     <Card.Body style={{border:'3px solid black', backgroundColor: 'black'}}>
-                      <Card.Title style={{marginTop: '15px', fontWeight:'bold'}}>{book.title}</Card.Title>
-                      <p><span style={{fontStyle: 'italic'}}>Authors:</span> {book.authors}</p>
-                      <Card.Text style={{maxHeight: '15ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block', color:'lightgry'}}>{book.description}</Card.Text>
-                      <Card.Text>{book.description.length > 400 && <p>...</p>}</Card.Text>
+                      <Card.Title style={{marginTop: '15px', fontWeight:'bold', color: 'seashell'}}>{book.title}</Card.Title>
+                      <Card.Text style={{color: 'gainsboro'}}><span style={{fontStyle: 'italic', color: 'darkgrey'}}>Authors:</span> {book.authors}</Card.Text>
+                      <Card.Text style={{maxHeight: '17ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block', color:'lightgray'}}>{book.description}</Card.Text>
+                      <Card.Text>{book.description.length > 400 && '...'}</Card.Text>
                       {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Book already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
-                        <Button variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
+                        <Button style={{color:'seashell'}} variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
                       )}
                     </Card.Body>
                   </Card>
@@ -162,8 +159,6 @@ const Search = (props) => {
         </Modal.Body>
       </Modal>
     </>
-    // )}
-    // </>
   )
 }
 

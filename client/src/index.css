@@ -11,3 +11,57 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.titleTrim {
+  margin-top: 15px;
+  font-weight: bold;
+  max-width: 37ch;
+  max-height: 7ch;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: inline-block;
+}
+
+.authorTrim {
+  max-width: 37ch;
+  max-height: 8ch; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: inline-block;
+}
+
+.displayGrid {
+  display: grid;
+  grid-auto-flow: row;
+  /* grid-auto-rows: auto; */
+  /* grid-auto-columns: auto; */
+  grid-template-columns: repeat(3, 31%);
+  /* grid-template-rows: repeat(3, 450px); */
+  row-gap: 15px;
+  column-gap: 15px;
+}
+
+.gridItem {
+}
+
+
+@media screen and (max-width: 575px) {
+  .titleTrim {
+    max-width: 30ch;
+  }
+
+  .authorTrim {
+    max-width: 30ch;
+  }
+
+  .displayGrid {
+    grid-template-columns: repeat(2, 48%);
+    column-gap: 0px;
+  }
+  
+  .gridItem {
+
+  }
+}

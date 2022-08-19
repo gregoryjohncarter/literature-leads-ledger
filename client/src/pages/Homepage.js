@@ -16,6 +16,16 @@ const Homepage = () => {
 
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoSelection, setInfoSelection] = useState('');
+
+  console.log(infoSelection);
+
+  const handleSelectModal = (book) => {
+    setInfoSelection(book);
+    setShowInfoModal(true)
+  }
+
   const updateIds = useEffect(() => {
     setSavedBookIds(books.books.map((books) => {
       return books.bookId;
@@ -36,31 +46,41 @@ const Homepage = () => {
       <div style={{backgroundColor: '#b5b5b5', borderTop: '6px solid lightgray'}}>
         <Search savedBookIds={savedBookIds}></Search>
       </div>
-      <div style={{borderTop: '8px dotted darkslategray'}}>
-        <Container>
-          <CardColumns style={{marginTop: '10px'}}>
-                {books.books.map((book) => {
-                  return (
-                    <Col xs={4} s={4} l={4}>
-                      <Card className='border-0' key={book.bookId} border='dark' style={{fontFamily: 'Baskerville', color: 'whitesmoke'}}>
-                        {book.image ? (
-                          <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '250px', width: '170px'}}/>
-                        ) : null}
-                        <Card.Body style={{border:'3px solid black', backgroundColor: 'black'}}>
-                          <Card.Title style={{marginTop: '15px', fontWeight:'bold'}}>{book.title}</Card.Title>
-                          <p><span style={{fontStyle:'italic', fontSize: '22px'}}>Authors: </span>{book.authors}</p>
-                          <Card.Text></Card.Text>
-                          {auth.loggedIn() && checkRemoveButton(book) && 
-                            <Button variant='danger' size='lg' onClick={() => removeBook(book.bookId)}>Remove this recommendation</Button> 
-                          }
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  );
-                })}
-            </CardColumns>
-        </Container>
+      <div className='displayGrid' style={{borderTop: '8px dotted darkslategray'}}>
+        {books.books.map((book) => {
+          return (
+            <Col key={book.bookId} className='gridItem'>
+              <Card className='border-0' border='dark' style={{fontFamily: 'Baskerville', color: 'whitesmoke'}}>
+                {book.image ? (
+                  <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '250px', width: '170px'}}/>
+                ) : null}
+                <Card.Body style={{border:'3px solid black', backgroundColor: 'black', marginTop: '20px'}}>
+                  <Card.Title className='titleTrim'>{book.title}</Card.Title>
+                  <Card.Text><p className='authorTrim'><span style={{fontStyle:'italic', fontSize: '22px'}}>Authors: </span>{book.authors}</p></Card.Text>
+                  <Button variant='success' size='lg' onClick={() => handleSelectModal(book)}>More info</Button> 
+                  {/* {auth.loggedIn() && checkRemoveButton(book) && 
+                    <Button variant='danger' size='lg' onClick={() => removeBook(book.bookId)}>Remove this recommendation</Button> 
+                  } */}
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
       </div>
+      <Modal
+        size='lg'
+        show={showInfoModal}
+        onHide={() => setShowInfoModal(false)}
+        aria-labelledby='info-modal'
+      >
+        <Modal.Header closeButton style={{backgroundColor: 'grey'}}>
+          <Modal.Title id='info-modal' style={{backgroundColor: 'grey', color: 'lightgrey'}}>
+            <h2 style={{fontFamily: 'Times New Roman'}}>
+              {infoSelection.title}
+            </h2>
+          </Modal.Title>
+        </Modal.Header>
+      </Modal>
     </>
   )
 }
