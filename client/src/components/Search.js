@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_BOOK } from '../utils/mutations';
 import { Container, Col, Form, Button, Card, CardColumns, Modal } from 'react-bootstrap';
@@ -51,7 +51,7 @@ const Search = (props) => {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
@@ -91,7 +91,9 @@ const Search = (props) => {
         }
     }
     return true;
-}
+  };
+
+  const updateQuery = useEffect(() => { props.refetch() }, [showResultsModal])
 
   return (
     <>
@@ -124,8 +126,8 @@ const Search = (props) => {
         onHide={() => setShowResultsModal(false)}
         aria-labelledby='results-modal'
       >
-        <Modal.Header closeButton style={{backgroundColor: 'grey'}}>
-          <Modal.Title id='results-modal' style={{backgroundColor: 'grey', color: 'lightgrey'}}>
+        <Modal.Header closeButton style={{backgroundColor: '#333333'}}>
+          <Modal.Title id='results-modal' style={{backgroundColor: '#333333', color: 'lightsteelblue'}}>
             <h2 style={{fontFamily: 'Times New Roman'}}>
               {searchedBooks.length
                 ? `Viewing ${searchedBooks.length} results:`
@@ -143,12 +145,12 @@ const Search = (props) => {
                       <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' style={{height: '500px', width: '350px', margin: 'auto', display: 'block', backgroundColor: 'black'}}/>
                     ) : null}
                     <Card.Body style={{border:'3px solid black', backgroundColor: 'black'}}>
-                      <Card.Title style={{marginTop: '15px', fontWeight:'bold', color: 'seashell'}}>{book.title}</Card.Title>
+                      <Card.Title style={{marginTop: '15px', fontWeight:'bold', color: 'lightsteelblue'}}>{book.title}</Card.Title>
                       <Card.Text style={{color: 'gainsboro'}}><span style={{fontStyle: 'italic', color: 'darkgrey'}}>Authors:</span> {book.authors}</Card.Text>
                       <Card.Text style={{maxHeight: '17ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block', color:'lightgray'}}>{book.description}</Card.Text>
                       <Card.Text>{book.description.length > 400 && '...'}</Card.Text>
                       {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Book already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
-                        <Button style={{color:'seashell'}} variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
+                        <Button style={{color:'#FFFAFA'}} variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
                       )}
                     </Card.Body>
                   </Card>
