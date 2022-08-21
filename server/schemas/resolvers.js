@@ -42,7 +42,7 @@ const resolvers = {
     },
     addBook: async (parent, args, context) => {
       if (context.user) {
-        const book = await Book.create({ ...args, user: context.user.username });
+        const book = await Book.create({ ...args, user: context.user.username, likeCount: '1', likes: [context.user.username] });
         return book;
       }
     
@@ -55,7 +55,37 @@ const resolvers = {
       }
     
       throw new AuthenticationError('You need to be logged in!');
-    }
+    },
+    addLike: async (parent, { bookId }, context) => {
+      if (context.user) {
+        const findCount = await Book.findOne(
+          { bookId: bookId }
+        );
+        const updatedBook = await Book.findOneAndUpdate(
+          { bookId: bookId },
+          { $set: { likeCount: String((Number(findCount.likeCount)+1)), likes: [...findCount.likes, context.user.username] }},
+          { new: true, runValidators: true }
+        );
+        return updatedBook;
+      }
+    
+      throw new AuthenticationError('You need to be logged in!');
+    },
+    removeLike: async (parent, { bookId }, context) => {
+      if (context.user) {
+        const findCount = await Book.findOne(
+          { bookId: bookId }
+        );
+        const updatedBook = await Book.findOneAndUpdate(
+          { bookId: bookId },
+          { $set: { likeCount: String((Number(findCount.likeCount)-1)) }, $pull: { likes: context.user.username }},
+          { new: true, runValidators: true }
+        );
+        return updatedBook;
+      }
+    
+      throw new AuthenticationError('You need to be logged in!');
+    },
   }
 };
 

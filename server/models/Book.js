@@ -35,8 +35,16 @@ const bookSchema = new Schema({
     type: String,
   },
   user: {
-    type: String
-  }
+    type: String,
+  },
+  likeCount: {
+    type: String,
+  },
+  likes: [
+    {
+      type: String
+    }
+  ]
 });
 
 const Book = model('Book', bookSchema);

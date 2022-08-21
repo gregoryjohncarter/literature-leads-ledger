@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { REMOVE_BOOK } from '../utils/mutations';
+import { REMOVE_BOOK, ADD_LIKE, REMOVE_LIKE } from '../utils/mutations';
 import { QUERY_BOOKS, QUERY_ME } from '../utils/queries';
-import { Container, Col, Form, Button, Card, CardColumns, Modal } from 'react-bootstrap';
+import { Container, Col, Button, Card, Modal } from 'react-bootstrap';
 import Search from '../components/Search';
 import auth from '../utils/auth';
 
 const Homepage = () => {
   const { data: savedBooks, refetch } = useQuery(QUERY_BOOKS);
-  const { data: user } = useQuery(QUERY_ME);
+  const { data: user } = useQuery(QUERY_ME); 
   const books = savedBooks || { books: [] };
   const [savedBookIds, setSavedBookIds] = useState([]);
   console.log(books);
@@ -20,6 +20,9 @@ const Homepage = () => {
   const [infoSelection, setInfoSelection] = useState('');
 
   console.log(infoSelection);
+
+  const [addLike] = useMutation(ADD_LIKE);
+  const [removeLike] = useMutation(REMOVE_LIKE);
 
   const handleSelectModal = (book) => {
     setInfoSelection(book);
@@ -33,6 +36,60 @@ const Homepage = () => {
   }, [savedBooks]);
 
   const updateQuery = useEffect(() => { refetch() }, [showInfoModal])
+
+  const handleLikeUnlike = async (selection, id) => {
+    const token = auth.loggedIn() ? auth.getToken() : null;
+
+    if (!token) {
+        return false;
+    }
+
+    if (selection === 'like') {
+      try {
+        const liked = await addLike({
+          variables: { bookId: id },
+          headers: {
+              authorization: `Bearer ${token}`
+          }
+        });
+        refetch();
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (selection === 'unLike') { 
+      try {
+        const unLiked = await removeLike({
+          variables: { bookId: id },
+          headers: {
+              authorization: `Bearer ${token}`
+          }
+        });
+        refetch();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  const checkLikeStatus = (book) => {
+    if (user) {
+      for (let x = 0; x < book.likes.length; x++) {
+        if (book.likes[x] === user.me.username) {
+          return false; 
+        }
+      }
+    }
+    return true;
+  }
+
+  const checkDefaultLike = (book) => {
+    if (user) {
+      if (book.user === user.me.username) {
+        return true;
+      }
+    }
+    return false
+  }
 
   const checkRemoveButton = (bookToSave) => {
     if (user) {
@@ -81,7 +138,14 @@ const Homepage = () => {
                 <Card.Body style={{border:'3px solid black', backgroundColor: 'black', marginTop: '20px'}}>
                   <Card.Title className='titleTrim'>{book.title}</Card.Title>
                   <Card.Text className='authorTrim'><span style={{fontStyle:'italic', fontSize: '22px'}}>Authors: </span>{book.authors}</Card.Text>
-                  <Button style={{display:'block'}} variant='success' size='lg' onClick={() => handleSelectModal(book)}>More info</Button> 
+                  <Button style={{display:'inline-block'}} variant='success' size='md' onClick={() => handleSelectModal(book)}>Details</Button>
+                  {!auth.loggedIn() || checkDefaultLike(book) ? <div style={{display:'inline', marginLeft: '18px'}}>
+                    ⬆ <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
+                  </div> : auth.loggedIn() && !checkDefaultLike(book) && checkLikeStatus(book) ? <div style={{display:'inline', marginLeft: '18px'}}><Button style={{display:'inline', backgroundColor:'grey', marginRight: '8px'}} onClick={() => handleLikeUnlike('like', book.bookId)} size='sm'>⬆</Button>
+                  <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
+                  </div> : <div style={{display:'inline', marginLeft: '18px'}}><Button style={{display:'inline', marginRight: '8px'}} onClick={() => handleLikeUnlike('unLike', book.bookId)} size='sm'>⬆</Button>
+                  <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
+                  </div>}
                 </Card.Body>
               </Card>
             </Col>

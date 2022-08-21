@@ -25,6 +25,8 @@ export const QUERY_BOOKS = gql`
       link
       title
       user
+      likeCount
+      likes
     }
   }
 `;
