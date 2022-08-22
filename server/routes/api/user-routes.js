@@ -16,7 +16,7 @@ const { authMiddleware } = require('../../utils/auth');
 
 router.route('/').post(createUser)
 router.route('/books').get(getBooks);
-router.route(`/${envRoute}`).post(saveBook);
+// router.route(`/${envRoute}`).post(saveBook);
 router.route('/login').post(login);
 router.route('/me').get(authMiddleware, getSingleUser);
 router.route(`/books/:bookId`).get(getSingleBook);

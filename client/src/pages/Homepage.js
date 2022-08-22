@@ -11,15 +11,11 @@ const Homepage = () => {
   const { data: user } = useQuery(QUERY_ME); 
   const books = savedBooks || { books: [] };
   const [savedBookIds, setSavedBookIds] = useState([]);
-  console.log(books);
-  console.log(user);
-
+  
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoSelection, setInfoSelection] = useState('');
-
-  console.log(infoSelection);
 
   const [addLike] = useMutation(ADD_LIKE);
   const [removeLike] = useMutation(REMOVE_LIKE);
@@ -82,7 +78,8 @@ const Homepage = () => {
     return true;
   }
 
-  const checkDefaultLike = (book) => {
+  // check if book was user's own submission
+  const checkUserCreator = (book) => {
     if (user) {
       if (book.user === user.me.username) {
         return true;
@@ -90,17 +87,6 @@ const Homepage = () => {
     }
     return false
   }
-
-  const checkRemoveButton = (bookToSave) => {
-    if (user) {
-      for (let i = 0; i < savedBookIds.length; i++) {
-          if (bookToSave.user === user.me.username) {
-              return true; 
-          }
-      }
-    }
-    return false;
-  };
 
   const handleRemoveBook = async (id) => {
     const token = auth.loggedIn() ? auth.getToken() : null;
@@ -139,9 +125,9 @@ const Homepage = () => {
                   <Card.Title className='titleTrim'>{book.title}</Card.Title>
                   <Card.Text className='authorTrim'><span style={{fontStyle:'italic', fontSize: '22px'}}>Authors: </span>{book.authors}</Card.Text>
                   <Button style={{display:'inline-block'}} variant='success' size='md' onClick={() => handleSelectModal(book)}>Details</Button>
-                  {!auth.loggedIn() || checkDefaultLike(book) ? <div style={{display:'inline', marginLeft: '18px'}}>
+                  {!auth.loggedIn() || checkUserCreator(book) ? <div style={{display:'inline', marginLeft: '18px'}}>
                     ⬆ <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
-                  </div> : auth.loggedIn() && !checkDefaultLike(book) && checkLikeStatus(book) ? <div style={{display:'inline', marginLeft: '18px'}}><Button style={{display:'inline', backgroundColor:'grey', marginRight: '8px'}} onClick={() => handleLikeUnlike('like', book.bookId)} size='sm'>⬆</Button>
+                  </div> : auth.loggedIn() && !checkUserCreator(book) && checkLikeStatus(book) ? <div style={{display:'inline', marginLeft: '18px'}}><Button style={{display:'inline', backgroundColor:'grey', marginRight: '8px'}} onClick={() => handleLikeUnlike('like', book.bookId)} size='sm'>⬆</Button>
                   <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
                   </div> : <div style={{display:'inline', marginLeft: '18px'}}><Button style={{display:'inline', marginRight: '8px'}} onClick={() => handleLikeUnlike('unLike', book.bookId)} size='sm'>⬆</Button>
                   <p style={{display:'inline', fontFamily: 'Verdana'}}>{book.likeCount}</p>
@@ -191,7 +177,7 @@ const Homepage = () => {
                 <Button disabled size='md'>Added by: [{infoSelection.user}]</Button>
               </div>
             </div>
-            {auth.loggedIn() && checkRemoveButton(infoSelection) && 
+            {auth.loggedIn() && checkUserCreator(infoSelection) && 
               <Button variant='danger' size='lg' onClick={() => handleRemoveBook(infoSelection.bookId)}>Delete my recommendation</Button> 
             }
           </Container>

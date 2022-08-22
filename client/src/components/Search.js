@@ -30,8 +30,6 @@ const Search = (props) => {
 
       const { items } = await response.json();
 
-      console.log(items);
-
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors ? book.volumeInfo.authors : ['No author to display'],
@@ -149,8 +147,8 @@ const Search = (props) => {
                       <Card.Text style={{color: 'gainsboro'}}><span style={{fontStyle: 'italic', color: 'darkgrey'}}>Authors:</span> {book.authors}</Card.Text>
                       <Card.Text style={{maxHeight: '17ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', display: 'inline-block', color:'lightgray'}}>{book.description}</Card.Text>
                       <Card.Text>{book.description.length > 400 && '...'}</Card.Text>
-                      {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Book already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
-                        <Button style={{color:'#FFFAFA'}} variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this book</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
+                      {!checkButton(book) && auth.loggedIn() ? ( <Button disabled variant='secondary' size='lg'>Already recommended</Button> ) : auth.loggedIn() && checkButton(book) ? (
+                        <Button style={{color:'#FFFAFA'}} variant='success' size='lg' onClick={() => handleSaveBook(book.bookId)}>Recommend this</Button> ) : ( <Button disabled variant='secondary' size='lg'>Login to recommend</Button>
                       )}
                     </Card.Body>
                   </Card>

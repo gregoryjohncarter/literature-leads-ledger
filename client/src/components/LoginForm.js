@@ -51,6 +51,7 @@ const LoginForm = (props) => {
             onChange={handleInputChange}
             value={userFormData.email}
             required
+            maxLength='30'
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
         </Form.Group>
@@ -63,6 +64,7 @@ const LoginForm = (props) => {
             onChange={handleInputChange}
             value={userFormData.password}
             required
+            maxLength='20'
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>

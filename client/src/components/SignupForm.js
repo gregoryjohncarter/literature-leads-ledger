@@ -8,10 +8,9 @@ const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   const [addUser, { error }] = useMutation(ADD_USER);
-  // set state for form validation
-  const [validated] = useState(false);
-  // set state for alert
-  const [showAlert, setShowAlert] = useState(false);
+  
+  const [validated] = useState(false); // set state for form validation
+  const [showAlert, setShowAlert] = useState(false);  // set state for alert
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -28,8 +27,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
 
-    // use try/catch instead of promises to handle errors
-    try {
+    try { // use try/catch instead of promises to handle errors
       const { data } = await addUser({
         variables: { ...userFormData }
       });
@@ -57,6 +55,7 @@ const SignupForm = () => {
             onChange={handleInputChange}
             value={userFormData.username}
             required
+            maxLength='20'
           />
           <Form.Control.Feedback type='invalid'>Username is required!</Form.Control.Feedback>
         </Form.Group>
@@ -69,6 +68,7 @@ const SignupForm = () => {
             onChange={handleInputChange}
             value={userFormData.email}
             required
+            maxLength='30'
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
         </Form.Group>
@@ -81,6 +81,7 @@ const SignupForm = () => {
             onChange={handleInputChange}
             value={userFormData.password}
             required
+            maxLength='20'
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
